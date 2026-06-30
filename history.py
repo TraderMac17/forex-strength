@@ -2,7 +2,9 @@ import json
 import os
 import time
 
-HISTORY_FILE = os.path.expanduser("~/forex-strength/score_history.json")
+# Works both locally and on Streamlit Cloud
+BASE_DIR     = os.path.dirname(os.path.abspath(__file__))
+HISTORY_FILE = os.path.join(BASE_DIR, "score_history.json")
 MAX_ENTRIES  = 48
 
 
@@ -24,8 +26,11 @@ def save_snapshot(currency_scores: dict):
     history.append(snapshot)
     if len(history) > MAX_ENTRIES:
         history = history[-MAX_ENTRIES:]
-    with open(HISTORY_FILE, "w") as f:
-        json.dump(history, f, indent=2)
+    try:
+        with open(HISTORY_FILE, "w") as f:
+            json.dump(history, f, indent=2)
+    except Exception:
+        pass
 
 
 def load_history():
